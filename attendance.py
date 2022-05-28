@@ -8,12 +8,13 @@ import mysql.connector
 import cv2
 import csv
 from tkinter import filedialog
+import sqlite3
 
 mydata=[]
 class Attendance:##for window
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1530x790+0+0")#for window size
+        self.root.attributes('-fullscreen', True)#for window size
         self.root.title("Student Attendance Report")
         self.root.wm_iconbitmap("icon-1.ico")
         #variables########
@@ -26,7 +27,7 @@ class Attendance:##for window
         self.var_atten_attendance=StringVar()
         
         #bg image
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\bg-1.jpg")
+        img3=Image.open(r"FRS_images\bg-1.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root,image=self.photoimg3)
@@ -41,7 +42,7 @@ class Attendance:##for window
         
         
         main_frame=Frame(bg_img,bd=2,bg="white")
-        main_frame.place(x=0,y=50,width=1480,height=600) 
+        main_frame.place(x=0,y=100,width=1480,height=600) 
         
         #left label frame
         Left_frame=LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
@@ -264,11 +265,11 @@ class Attendance:##for window
         ######### Adding data to database######################333
         
     def add_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         
         try:
-            my_cursor.execute("insert into attendance values(%s,%s,%s,%s,%s,%s,%s)",(
+            my_cursor.execute("insert into attendance values(?,?,?,?,?,?,?)",(
                                                                                              self.var_atten_id.get(),
                                                                                              self.var_atten_roll.get(),       
                                                                                              self.var_atten_name.get(),
@@ -287,7 +288,7 @@ class Attendance:##for window
             messagebox.showerror("Error",f"Due To :{str(es)}",parent=self.root) 
     ###############fetch data#####################
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         my_cursor.execute("select * from attendance")
         data=my_cursor.fetchall()
@@ -307,9 +308,9 @@ class Attendance:##for window
             try:
                 Update=messagebox.askyesno("Update","Do you want to update this student details",parent=self.root)
                 if Update>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    my_cursor.execute("update attendance set roll=%s,name=%s,department=%s,time=%s,attendance=%s where id=%s and date=%s",(
+                    my_cursor.execute("update attendance set roll=?,name=?,department=?,time=?,attendance=? where id=? and date=?",(
                                                                                              self.var_atten_roll.get(),       
                                                                                              self.var_atten_name.get(),
                                                                                              self.var_atten_dep.get(),
@@ -338,9 +339,9 @@ class Attendance:##for window
             try:
                 delete=messagebox.askyesno("Delete","Do you want to delete this student details",parent=self.root)
                 if delete>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    sql="delete from attendance where id=%s"
+                    sql="delete from attendance where id=?"
                     val=(self.var_atten_id.get(),)
                     my_cursor.execute(sql,val)
                 else:
@@ -359,7 +360,7 @@ class Attendance:##for window
             #messagebox.showerror("Error","Please select option")
         #else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 
                 if self.var_com_search.get()=="" or self.var_search.get()=="" and self.var_search_id.get()!="" and self.var_search_date.get()!="" :

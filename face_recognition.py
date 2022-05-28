@@ -9,6 +9,7 @@ from time import strftime
 from datetime import datetime
 import cv2
 import numpy as np
+import sqlite3
 
 
 class Face_Recognition:##for window
@@ -69,7 +70,7 @@ class Face_Recognition:##for window
                 confidence=int((100*(1-predict/300)))
                 
                 
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 
                 my_cursor.execute("select Name from student where Student_id="+str(id))

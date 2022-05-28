@@ -18,6 +18,7 @@ import tkinter
 import os
 import pyttsx3
 import re
+import sqlite3
 
 
 
@@ -42,7 +43,7 @@ class Login_window:
         
         ############### Student and Faculty Login Frame #########################
         
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\newbg.jpg")
+        img3=Image.open(r"FRS_images\newbg.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root,image=self.photoimg3)
@@ -50,7 +51,7 @@ class Login_window:
         frame=Frame(self.root,bg="powder blue")
         frame.place(x=150,y=120,width=400,height=480)
         
-        img1=Image.open(r"C:\Face_Recognization\FRS_images\feamle_user.png")
+        img1=Image.open(r"FRS_images\feamle_user.png")
         img1=img1.resize((100,100),Image.ANTIALIAS)
         self.photoimg1=ImageTk.PhotoImage(img1)
         lblimg1=Label(image=self.photoimg1,bg="powder blue",borderwidth=0)
@@ -93,7 +94,7 @@ class Login_window:
         frame_admin.place(x=750,y=120,width=400,height=480)
        
         
-        img2=Image.open(r"C:\Face_Recognization\FRS_images\feamle_user.png")
+        img2=Image.open(r"FRS_images\feamle_user.png")
         img2=img2.resize((100,100),Image.ANTIALIAS)
         self.photoimg2=ImageTk.PhotoImage(img2)
         lblimg2=Label(image=self.photoimg2,bg="powder blue",borderwidth=0)
@@ -142,9 +143,9 @@ class Login_window:
         if self.txtuser.get()=="" or self.txtpass.get()=="":
             messagebox.showerror("Error","Please fill required fields")
         else:
-            conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+            conn=sqlite3.connect(r'database\face_recognition.db')
             my_cursor=conn.cursor()
-            my_cursor.execute("select * from users where email=%s and password=%s",(
+            my_cursor.execute("select * from users where email=? and password=?",(
                                                                                 self.txtuser.get(),
                                                                                 self.txtpass.get()
                                                                                 
@@ -153,11 +154,11 @@ class Login_window:
             if row==None:
                 messagebox.showerror("Error","Invalid username and password")
             else:
-                query=("select * from users where email=%s and password=%s and role LIKE '%"+str(self.var_roles)+"%'")
+                query=("select * from users where email=? and password=? and role LIKE '%"+str(self.var_roles)+"%'")
                 value=(self.txtuser.get(),self.txtpass.get(),)
                 my_cursor.execute(query,value)
                 row=my_cursor.fetchone()
-                query2=("select * from users where email=%s and password=%s and role LIKE '%"+str(self.var_roles_student)+"%'")
+                query2=("select * from users where email=? and password=? and role LIKE '%"+str(self.var_roles_student)+"%'")
                 value2=(self.txtuser.get(),self.txtpass.get(),)
                 my_cursor.execute(query2,value2)
                 row2=my_cursor.fetchone()
@@ -180,9 +181,9 @@ class Login_window:
         if self.txtuser_admin.get()=="" or self.txtpass_admin.get()=="":
             messagebox.showerror("Error","Please fill required fields")
         else:
-            conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+            conn=conn=sqlite3.connect(r'database\face_recognition.db')
             my_cursor=conn.cursor()
-            my_cursor.execute("select * from users where email=%s and password=%s",(
+            my_cursor.execute("select * from users where email=? and password=?",(
                                                                                 self.txtuser_admin.get(),
                                                                                 self.txtpass_admin.get()
                                                                         ))
@@ -190,7 +191,7 @@ class Login_window:
             if row_1==None:
                 messagebox.showerror("Error","Invalid username and password")
             else:
-                query=("select * from users where email=%s and password=%s and role LIKE '%"+str(self.var_roles_admin)+"%'")
+                query=("select * from users where email=? and password=? and role LIKE '%"+str(self.var_roles_admin)+"%'")
                 value=(self.txtuser_admin.get(),self.txtpass_admin.get(),)
                 my_cursor.execute(query,value)
                 row_1=my_cursor.fetchone()
@@ -215,16 +216,16 @@ class Login_window:
         elif self.txt_new_password.get().isalnum()>0 or len(self.txt_new_password.get())<8:
             messagebox.showerror("Error","password must contain numbers,alphabets and some special characters i.e, @#$%&\n atleast 8 characters should be there",parent=self.root2)
         else:
-            conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+            conn=sqlite3.connect(r'database\face_recognition.db')
             my_cursor=conn.cursor()
-            query=("select * from users where email=%s and securityQ=%s and securityA=%s")
+            query=("select * from users where email=? and securityQ=? and securityA=?")
             value=(self.txtuser.get(),self.combo_security_Q.get(),self.txt_security.get(),)
             my_cursor.execute(query,value)
             row=my_cursor.fetchone()
             if row==None:
                 messagebox.showerror("Error","Please enter the correct answer",parent=self.root2)
             else:
-                query=("update users set password=%s where email=%s")
+                query=("update users set password=? where email=?")
                 value=(self.txt_new_password.get(),self.txtuser.get())
                 my_cursor.execute(query,value)
                 conn.commit()
@@ -239,9 +240,9 @@ class Login_window:
         if self.txtuser.get()=="":
             messagebox.showerror("Error","Enter the email address to Reset password",parent=self.root)
         else:
-            conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+            conn=sqlite3.connect(r'database\face_recognition.db')
             my_cursor=conn.cursor()
-            query=("select *from users where email=%s")
+            query=("select *from users where email=?")
             value=(self.txtuser.get(),)
             my_cursor.execute( query,value)
             row=my_cursor.fetchone()
@@ -266,6 +267,7 @@ class Login_window:
                 security_A.place(x=50,y=150)
                 self.txt_security=ttk.Entry(self.root2,font=("times new roman",15))
                 self.txt_security.place(x=50,y=180,width=250)
+                self.txt_security.config(show="*")
                 
                 #####NEW PASSWORD
                 new_password=Label(self.root2,text="New password",font=("times new roman",15,"bold"),bg="white",fg='black')
@@ -310,13 +312,13 @@ class Register:
         
        
         
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\newbg.jpg")
+        img3=Image.open(r"FRS_images\newbg.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root,image=self.photoimg3)
         bg_img.place(x=0,y=0,width=1520,height=790)
         #left image
-        self.bg1=ImageTk.PhotoImage(file=r"C:\Face_Recognization\FRS_images\face_scan_adobe.jpg")
+        self.bg1=ImageTk.PhotoImage(file=r"FRS_images\face_scan_adobe.jpg")
         left_lbl=Label(self.root,image=self.bg1)
         left_lbl.place(x=50,y=100,width=470,height=500)
         
@@ -395,13 +397,13 @@ class Register:
         
         #buttons
         #register button
-        #img=Image.open(r"C:\Face_Recognization\FRS_images\register-now-button-sign-key-push-banner-180929040.jpg")
+        #img=Image.open(r"FRS_images\register-now-button-sign-key-push-banner-180929040.jpg")
         #img=img.resize((100,50),Image.ANTIALIAS)
         #self.photoimage=ImageTk.PhotoImage(img)
         b1=Button(frame,text="Register",command=self.register_data,borderwidth=0,bg="Dark blue",fg="black",font=("times new roman",15,"bold"),cursor="hand2",)
         b1.place(x=50,y=450,width=200,height=35)
         #login button
-        #img1=Image.open(r"C:\Face_Recognization\FRS_images\login.jpg")
+        #img1=Image.open(r"FRS_images\login.jpg")
         #img1=img1.resize((100,50),Image.ANTIALIAS)
         #self.photoimage1=ImageTk.PhotoImage(img1)
         #b2=Button(frame,image=self.photoimage1,borderwidth=0,cursor="hand2")
@@ -447,16 +449,16 @@ class Register:
                 messagebox.showerror("Error","Agree our terms and conditions")
         
             else:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
-                query=("select * from users where email=%s")
+                query=("select * from users where email=?")
                 value=(self.var_email.get(),)
                 my_cursor.execute(query,value)
                 row=my_cursor.fetchone()
                 if row!=None:
                     messagebox.showerror("Error","User already exist,please try another email")
                 else:
-                    my_cursor.execute("insert into users values(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                    my_cursor.execute("insert into users values(?,?,?,?,?,?,?,?,?)",(
                                                                         
                                                                         self.var_fname.get(),
                                                                         self.var_lname.get(),

@@ -9,6 +9,7 @@ from time import strftime
 from datetime import datetime
 import cv2
 import numpy as np
+import sqlite3
 
 
 class Face_Recognition_faculty:##for window
@@ -36,18 +37,18 @@ class Face_Recognition_faculty:##for window
         quit.place(x=1150,y=10,width=70,height=35)
         
     # ==================marking attendance========================
-    def mark_attendance(self,i,r,n,d):
+    def mark_attendance(self,i,n,d):
         with open(r"Attendance\Attendance_faculty.csv","r+",newline="\n") as f:
             myDataList=f.readlines()
             name_list=[]
             for line in myDataList:
                 entry=line.split((","))    
                 name_list.append(entry[0])
-            if((i not in name_list) and (r not in name_list) and (n not in name_list) and (d not in name_list)):
+            if((i not in name_list) and (n not in name_list) and (d not in name_list)):
                 now=datetime.now()
                 d1=now.strftime("%d/%m/%Y")
                 dtString=now.strftime("%H:%M:%S")
-                f.writelines(f"\n{i},{r},{n},{d},{dtString},{d1},Present")
+                f.writelines(f"\n{i},{n},{d},{dtString},{d1},Present")
                 
                 
                 
@@ -69,16 +70,12 @@ class Face_Recognition_faculty:##for window
                 confidence=int((100*(1-predict/300)))
                 
                 
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 
                 my_cursor.execute("select name from faculty where id="+str(id))
                 n=my_cursor.fetchone()
                 n="+".join(n)
-                
-                my_cursor.execute("select designition from faculty where id="+str(id))
-                r=my_cursor.fetchone()
-                r="+".join(r)
                 
                 my_cursor.execute("select dep from faculty where id="+str(id))
                 d=my_cursor.fetchone()
@@ -90,11 +87,11 @@ class Face_Recognition_faculty:##for window
                 
                 if confidence>77:
                     cv2.putText(img,f"Employee ID:{i}",(x,y-75),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
-                    cv2.putText(img,f"Designition:{r}",(x,y-55),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
-                    cv2.putText(img,f"Name:{n}",(x,y-30),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
-                    cv2.putText(img,f"Department:{d}",(x,y-5),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
+                    #cv2.putText(img,f"Designition:{r}",(x,y-55),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
+                    cv2.putText(img,f"Name:{n}",(x,y-55),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
+                    cv2.putText(img,f"Department:{d}",(x,y-30),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
                     
-                    self.mark_attendance(i, r, n, d)
+                    self.mark_attendance(i, n, d)
                 else:
                     cv2.rectangle(img,(x,y),(x+w,y+h),(0,0,255),3) 
                     cv2.putText(img,"Unknown Face",(x,y-5),cv2.FONT_HERSHEY_COMPLEX,0.8,(0,0,255),3)

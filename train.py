@@ -12,7 +12,7 @@ import numpy as np
 class Train:##for window
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1530x790+0+0")#for window size
+        self.root.attributes('-fullscreen', True)#for window size
         self.root.title("Train DataSet")
         self.root.wm_iconbitmap("icon-1.ico")
         #title_label=Label(self.root,text="Train DataSet",font=("times new roman",35,"bold"),bg="blue",fg="powderblue")

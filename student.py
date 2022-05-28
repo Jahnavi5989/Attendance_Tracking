@@ -4,14 +4,14 @@ from pil import Image,ImageTk
 from tkinter import messagebox
 from tkinter import filedialog
 import os
-import mysql.connector
+import sqlite3
 import cv2
 
 
 class Student:##for window
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1530x790+0+0")#for window size
+        self.root.attributes('-fullscreen', True)#for window size
         self.root.title("Student details")
         #root.mainloop()
         self.root.wm_iconbitmap("icon-1.ico")
@@ -35,7 +35,7 @@ class Student:##for window
         
         
         #bg image
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\bg-1.jpg")
+        img3=Image.open(r"FRS_images\bg-1.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root,image=self.photoimg3)
@@ -50,7 +50,7 @@ class Student:##for window
         
         
         main_frame=Frame(bg_img,bd=2,bg="white")
-        main_frame.place(x=0,y=50,width=1480,height=600) 
+        main_frame.place(x=0,y=100,width=1480,height=600) 
         
         #left label frame
         Left_frame=LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
@@ -321,9 +321,9 @@ class Student:##for window
         else:
             try:
                 
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
-                my_cursor.execute("insert into student values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",(
+                my_cursor.execute("insert into student values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(
                                                                                             
                                                                                                              self.var_dep.get(),
                                                                                                              self.var_course.get(),
@@ -352,7 +352,7 @@ class Student:##for window
     
     #========================fetch data===============#
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         my_cursor.execute("select * from student")
         data=my_cursor.fetchall()
@@ -395,9 +395,9 @@ class Student:##for window
             try:
                 Update=messagebox.askyesno("Upadte","Do you want to update this student details",parent=self.root)
                 if Update>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Division=%s,Roll=%s,gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,PhotoSample=%s where Student_id=%s",(
+                    my_cursor.execute("update student set Dep=?,course=?,Year=?,Semester=?,Name=?,Division=?,Roll=?,gender=?,Dob=?,Email=?,Phone=?,Address=?,Teacher=?,PhotoSample=? where Student_id=?",(
                                                                                                                                                                                                                   
                                                                                                              self.var_dep.get(),
                                                                                                              self.var_course.get(),
@@ -433,9 +433,9 @@ class Student:##for window
             try:
                 delete=messagebox.askyesno("Delete","Do you want to delete this student details",parent=self.root)
                 if delete>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    sql="delete from student where Student_id=%s"
+                    sql="delete from student where Student_id=?"
                     val=(self.var_std_id.get(),)
                     my_cursor.execute(sql,val)
                 else:
@@ -471,7 +471,7 @@ class Student:##for window
             messagebox.showerror("Error","Please select option")
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student where " +str(self.var_com_search.get())+" LIKE '%"+str(self.var_search.get())+"%'")
                 data=my_cursor.fetchall()
@@ -493,14 +493,15 @@ class Student:##for window
             messagebox.showerror("Error","All fields are required",parent=self.root)
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                messagebox.showinfo("Instructions","1.Show your face to camera in correct angle\n2.Please dont close camera button while it is taking photosamples",parent=self.root)
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student")
                 myresult=my_cursor.fetchall()
                 id=0
                 for x in myresult:
                     id+=1
-                my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Division=%s,Roll=%s,gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,PhotoSample=%s where Student_id=%s",(
+                my_cursor.execute("update student set Dep=?,course=?,Year=?,Semester=?,Name=?,Division=?,Roll=?,gender=?,Dob=?,Email=?,Phone=?,Address=?,Teacher=?,PhotoSample=? where Student_id=?",(
                                                                                                                                                                                                                   
                                                                                                              self.var_dep.get(),
                                                                                                              self.var_course.get(),

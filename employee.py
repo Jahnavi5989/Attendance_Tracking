@@ -1,18 +1,19 @@
 from tkinter import*
 from tkinter import ttk
 from pil import Image,ImageTk
-import mysql.connector
 from tkinter import messagebox
 import cv2
+import sqlite3
 
 
 class Employee:
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1520x790+0+0")
+        #self.root.geometry("1520x790+0+0")
         self.root.title('Faculty Details')
         self.root.configure(bg='white')
         self.root.wm_iconbitmap("icon-1.ico")
+        self.root.attributes('-fullscreen', True)
         #variable
         self.var_id=StringVar()
         self.var_dep=StringVar()
@@ -41,7 +42,7 @@ class Employee:
         
         #images
         
-        img_left=Image.open(r"C:\Face_Recognization\FRS_images\employeebg.jpg")
+        img_left=Image.open(r"FRS_images\employeebg.jpg")
         img_left=img_left.resize((800,150),Image.ANTIALIAS)
         self.photoimg_left=ImageTk.PhotoImage(img_left)
         frame_label=Label(img_frame,image=self.photoimg_left)
@@ -49,7 +50,7 @@ class Employee:
         
         # Main frame
         Main_frame=Frame(self.root,bd=2,relief=RIDGE,bg='white')
-        Main_frame.place(x=0,y=150,width=1300,height=495)
+        Main_frame.place(x=0,y=150,width=1300,height=595)
         # upper Frame
         upper_frame=LabelFrame(Main_frame,bd=2,relief=RIDGE,text="Faculty Details",font=('times new roman',15,'bold'),fg='darkblue',bg='white')
         upper_frame.place(x=10,y=5,width=1250,height=220)
@@ -164,7 +165,7 @@ class Employee:
         
         #down frame
         down_frame=LabelFrame(Main_frame,bd=2,relief=RIDGE,text="Faculty Details Table",font=('times new roman',15,'bold'),fg='darkblue',bg='white')
-        down_frame.place(x=10,y=230,width=1250,height=245)
+        down_frame.place(x=10,y=230,width=1250,height=300)
         
         #search frame
         search_frame=LabelFrame(down_frame,bd=2,relief=RIDGE,bg='white')
@@ -191,7 +192,7 @@ class Employee:
         
         ########## faculty table #####################
         table_frame=Frame(down_frame,bd=2,relief=RIDGE)
-        table_frame.place(x=10,y=40,width=1220,height=175)
+        table_frame.place(x=10,y=40,width=1220,height=200)
         
         scroll_x=ttk.Scrollbar(table_frame,orient=HORIZONTAL)
         scroll_y=ttk.Scrollbar(table_frame,orient=VERTICAL)
@@ -245,9 +246,17 @@ class Employee:
             messagebox.showerror("Error","Please fill all the required fields")
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
-                my_cursor.execute('insert into faculty values(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)',(
+                query=("select * from faculty where idproof=?")
+                value=(self.var_idproof.get(),)
+                my_cursor.execute(query,value)
+                row=my_cursor.fetchone()
+                if row!=None:
+                    messagebox.showerror("Error","Id proof already exists",parent=self.root)
+                else:
+                    
+                    my_cursor.execute('insert into faculty values(?,?,?,?,?,?,?,?,?,?,?,?,?)',(
                                                                                                         self.var_id.get(),
                                                                                                         self.var_dep.get(),
                                                                                                         self.var_name.get(),
@@ -262,17 +271,17 @@ class Employee:
                                                                                                         self.var_contact.get(),
                                                                                                         self.var_salary.get() 
                                                                                                                                                                     
-                ))
-                conn.commit()
-                self.fetch_data()
-                conn.close()
-                messagebox.showinfo('Success','Faculty details added succesfully',parent=self.root)
+                 ))
+                    conn.commit()
+                    self.fetch_data()
+                    conn.close()
+                    messagebox.showinfo('Success','Faculty details added succesfully',parent=self.root)
             except Exception as ex:
                 messagebox.showerror('Error',f"Due To : {str(ex)}",parent=self.root)
                 
     #fetch data
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         my_cursor.execute("select * from faculty")
         data=my_cursor.fetchall()
@@ -313,9 +322,9 @@ class Employee:
             try:
                 Update=messagebox.askyesno("Upadte","Do you want to update this faculty details",parent=self.root)
                 if Update>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    my_cursor.execute("update faculty set dep=%s,name=%s,designition=%s,email=%s,cityname=%s,mstatus=%s,dob=%s,idproofcombo=%s,gender=%s,phone=%s,salary=%s where id=%s and idproof=%s",(
+                    my_cursor.execute("update faculty set dep=?,name=?,designition=?,email=?,cityname=?,mstatus=?,dob=?,idproofcombo=?,gender=?,phone=?,salary=? where id=? and idproof=?",(
                                                                                                                                                                                                                   
                                                                                                         
                                                                                                         self.var_dep.get(),
@@ -351,9 +360,9 @@ class Employee:
             try:
                 delete=messagebox.askyesno("Delete","Do you want to delete this faculty details",parent=self.root)
                 if delete>0:
-                    conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                    conn=sqlite3.connect(r'database\face_recognition.db')
                     my_cursor=conn.cursor()
-                    sql="delete from faculty where id=%s"
+                    sql="delete from faculty where id=?"
                     val=(self.var_id.get(),)
                     my_cursor.execute(sql,val)
                 else:
@@ -387,7 +396,7 @@ class Employee:
             messagebox.showerror("Error","Please select option",parent=self.root)
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from faculty where " +str(self.var_com_search.get())+" LIKE '%"+str(self.var_search.get())+"%'")
                 data=my_cursor.fetchall()
@@ -408,14 +417,15 @@ class Employee:
             messagebox.showerror("Error","All fields are required",parent=self.root)
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                messagebox.showinfo("Instructions","1.Show your face to the camera correctly\n2.Please dont close camera while it is taking photo samples",parent=self.root)
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from faculty")
                 myresult=my_cursor.fetchall()
                 id=0
                 for x in myresult:
                     id+=1
-                my_cursor.execute("update faculty set dep=%s,name=%s,designition=%s,email=%s,cityname=%s,mstatus=%s,dob=%s,idproofcombo=%s,gender=%s,phone=%s,salary=%s where id=%s and idproof=%s",(
+                my_cursor.execute("update faculty set dep=?,name=?,designition=?,email=?,cityname=?,mstatus=?,dob=?,idproofcombo=?,gender=?,phone=?,salary=? where id=? and idproof=?",(
                                                                                                                                                                                                                   
                                                                                                         
                                                                                                         self.var_dep.get(),
@@ -437,6 +447,7 @@ class Employee:
                 self.fetch_data()
                 self.reset_data()
                 conn.close()
+            
             
                 
                     

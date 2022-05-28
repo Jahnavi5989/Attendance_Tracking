@@ -9,11 +9,12 @@ from attendance import Attendance
 from helpdesk import Help
 from time import strftime
 from datetime import datetime
-
+import sqlite3
 import tkinter
 import webbrowser
 import os
 import pyttsx3
+import sqlite3
 import mysql.connector
 import cv2
 import csv
@@ -52,7 +53,7 @@ class Face_Recognition_System_student:##for window
         lblportal.place(x=1000,y=0,width=210,height=50) 
         
         #details button
-        img4=Image.open(r"C:\Face_Recognization\FRS_images\student_details.png")
+        img4=Image.open(r"FRS_images\student_details.png")
         img4=img4.resize((140,190),Image.ANTIALIAS)
         self.photoimg4=ImageTk.PhotoImage(img4)
         
@@ -74,7 +75,7 @@ class Face_Recognition_System_student:##for window
         b4.place(x=400,y=300,width=220,height=40)
         
         #Attendance button
-        img6=Image.open(r"C:\Face_Recognization\FRS_images\attendance_report.jpg")
+        img6=Image.open(r"FRS_images\attendance_report.jpg")
         img6=img6.resize((160,190),Image.ANTIALIAS)
         self.photoimg6=ImageTk.PhotoImage(img6)
         
@@ -87,7 +88,7 @@ class Face_Recognition_System_student:##for window
         #Developer Button
        
        
-        img11=Image.open(r"C:\Face_Recognization\FRS_images\dev.jpg")
+        img11=Image.open(r"FRS_images\dev.jpg")
         img11=img11.resize((160,190),Image.ANTIALIAS)
         self.photoimg11=ImageTk.PhotoImage(img11)
         
@@ -101,7 +102,7 @@ class Face_Recognition_System_student:##for window
         
         #Train face button
         
-        img8=Image.open(r"C:\Face_Recognization\FRS_images\train_dataset.jpg")
+        img8=Image.open(r"FRS_images\train_dataset.jpg")
         img8=img8.resize((200,190),Image.ANTIALIAS)
         self.photoimg8=ImageTk.PhotoImage(img8)
         
@@ -181,7 +182,7 @@ class Face_Recognition_System_student:##for window
 class Student_win:##for window
     def __init__(self,root):
         self.root=root
-        self.root.geometry("1530x790+0+0")#for window size
+        self.root.attributes('-fullscreen', True)#for window size
         self.root.title("Student details")
         #root.mainloop()
         self.root.wm_iconbitmap("icon-1.ico")
@@ -205,7 +206,7 @@ class Student_win:##for window
         
         
         #bg image
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\bg-1.jpg")
+        img3=Image.open(r"FRS_images\bg-1.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root,image=self.photoimg3)
@@ -220,7 +221,7 @@ class Student_win:##for window
         
         
         main_frame=Frame(bg_img,bd=2,bg="white")
-        main_frame.place(x=0,y=50,width=1480,height=600) 
+        main_frame.place(x=0,y=100,width=1480,height=600) 
         
         #left label frame
         Left_frame=LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
@@ -476,7 +477,7 @@ class Student_win:##for window
     
     #========================fetch data===============#
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         my_cursor.execute("select * from student")
         data=my_cursor.fetchall()
@@ -540,7 +541,7 @@ class Student_win:##for window
             messagebox.showerror("Error","Please select option")
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student where " +str(self.var_com_search.get())+" LIKE '%"+str(self.var_search.get())+"%'")
                 data=my_cursor.fetchall()
@@ -562,14 +563,15 @@ class Student_win:##for window
             messagebox.showerror("Error","All fields are required",parent=self.root)
         else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                messagebox.showinfo("Instructions","1.Show your face to camera in correct angle\n2.Please dont close camera button while it is taking photosamples",parent=self.root)
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student")
                 myresult=my_cursor.fetchall()
                 id=0
                 for x in myresult:
                     id+=1
-                my_cursor.execute("update student set Dep=%s,course=%s,Year=%s,Semester=%s,Name=%s,Division=%s,Roll=%s,gender=%s,Dob=%s,Email=%s,Phone=%s,Address=%s,Teacher=%s,PhotoSample=%s where Student_id=%s",(
+                my_cursor.execute("update student set Dep=?,course=?,Year=?,Semester=?,Name=?,Division=?,Roll=?,gender=?,Dob=?,Email=?,Phone=?,Address=?,Teacher=?,PhotoSample=? where Student_id=?",(
                                                                                                                                                                                                                   
                                                                                                              self.var_dep.get(),
                                                                                                              self.var_course.get(),
@@ -638,7 +640,7 @@ mydata=[]
 class Attendance:##for window
     def __init__(self,root2):
         self.root2=root2
-        self.root2.geometry("1530x790+0+0")#for window size
+        self.root2.attributes('-fullscreen', True)#for window size
         self.root2.title("Attendance Report")
         self.root2.wm_iconbitmap("icon-1.ico")
         #variables########
@@ -651,7 +653,7 @@ class Attendance:##for window
         self.var_atten_attendance=StringVar()
         
         #bg image
-        img3=Image.open(r"C:\Face_Recognization\FRS_images\bg-1.jpg")
+        img3=Image.open(r"FRS_images\bg-1.jpg")
         img3=img3.resize((1520,790),Image.ANTIALIAS)
         self.photoimg3=ImageTk.PhotoImage(img3)
         bg_img=Label(self.root2,image=self.photoimg3)
@@ -666,7 +668,7 @@ class Attendance:##for window
         
         
         main_frame=Frame(bg_img,bd=2,bg="white")
-        main_frame.place(x=0,y=50,width=1480,height=600) 
+        main_frame.place(x=0,y=100,width=1480,height=600) 
         
         #left label frame
         Left_frame=LabelFrame(main_frame,bd=2,bg="white",relief=RIDGE,text="Student Details",font=("times new roman",12,"bold"))
@@ -856,7 +858,7 @@ class Attendance:##for window
     
     ###############fetch data#####################
     def fetch_data(self):
-        conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+        conn=sqlite3.connect(r'database\face_recognition.db')
         my_cursor=conn.cursor()
         my_cursor.execute("select * from attendance")
         data=my_cursor.fetchall()
@@ -877,7 +879,7 @@ class Attendance:##for window
             #messagebox.showerror("Error","Please select option")
         #else:
             try:
-                conn=mysql.connector.connect(host="localhost",username="root",password="Janu@5989",database="face_recognition")
+                conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 
                 if self.var_com_search.get()=="" or self.var_search.get()=="" and self.var_search_id.get()!="" and self.var_search_date.get()!="" :

@@ -16,6 +16,7 @@ from datetime import datetime
 import tkinter
 import os
 import pyttsx3
+import sqlite3
 
 
 class Face_Recognition_System_admin:##for window
@@ -47,7 +48,7 @@ class Face_Recognition_System_admin:##for window
         lblportal.place(x=1000,y=0,width=210,height=50)     
         
         #details button
-        img4=Image.open(r"C:\Face_Recognization\FRS_images\student_details.png")
+        img4=Image.open(r"FRS_images\student_details.png")
         img4=img4.resize((140,190),Image.ANTIALIAS)
         self.photoimg4=ImageTk.PhotoImage(img4)
         
@@ -58,7 +59,7 @@ class Face_Recognition_System_admin:##for window
         b2.place(x=100,y=300,width=220,height=40)
         
         #Faculty details
-        img9=Image.open(r"C:\Face_Recognization\FRS_images\dataset.jpg")
+        img9=Image.open(r"FRS_images\dataset.jpg")
         img9=img9.resize((160,190),Image.ANTIALIAS)
         self.photoimg9=ImageTk.PhotoImage(img9)
         
@@ -79,7 +80,7 @@ class Face_Recognition_System_admin:##for window
         b4.place(x=400,y=580,width=220,height=40)  
         
         #Attendance button
-        img6=Image.open(r"C:\Face_Recognization\FRS_images\attendance_report.jpg")
+        img6=Image.open(r"FRS_images\attendance_report.jpg")
         img6=img6.resize((160,190),Image.ANTIALIAS)
         self.photoimg6=ImageTk.PhotoImage(img6)
         
@@ -106,7 +107,7 @@ class Face_Recognition_System_admin:##for window
         
         #Train student dataset
         
-        img8=Image.open(r"C:\Face_Recognization\FRS_images\train_dataset.jpg")
+        img8=Image.open(r"FRS_images\train_dataset.jpg")
         img8=img8.resize((200,190),Image.ANTIALIAS)
         self.photoimg8=ImageTk.PhotoImage(img8)
         
@@ -132,7 +133,7 @@ class Face_Recognition_System_admin:##for window
         
         #Train faculty dataset
        
-        img10=Image.open(r"C:\Face_Recognization\FRS_images\train_dataset.jpg")
+        img10=Image.open(r"FRS_images\train_dataset.jpg")
         img10=img10.resize((160,190),Image.ANTIALIAS)
         self.photoimg10=ImageTk.PhotoImage(img10)
         

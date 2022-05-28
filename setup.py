@@ -14,7 +14,7 @@ executables = [cx_Freeze.Executable("login.py", base=base, icon="icon-1.ico")]
 
 cx_Freeze.setup(
     name = "Facial Recognition Software",
-    options = {"build_exe": {"packages":["tkinter","os"], "include_files":["icon-1.ico","tcl86t.dll","tk86t.dll", "data","data_faculty","FRS_images","database","Attendance","xmlfiles"]}},
+    options = {"build_exe": {"packages":["tkinter","os"], "include_files":["icon-1.ico",'tcl86t.dll','tk86t.dll', 'data','data_faculty','FRS_images','database','Attendance','xmlfiles']}},
     version = "1.0",
     description = "Face Recognition Automatic Attendance System",
     executables = executables
