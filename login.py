@@ -428,25 +428,25 @@ class Register:
         #======function decalration
 
     def register_data(self):
-        register= messagebox.askyesno("Warning","Are you sure that you have given your data accurately you cannot modify this again")
+        register= messagebox.askyesno("Warning","Are you sure that you have given your data accurately you cannot modify this again",parent=self.root)
         if register==0:
             return
         else:
             self.isValid(self.var_email.get())
             if(self.var_valid==1):
-                messagebox.showerror("Error","Enter email in correct format")
+                messagebox.showerror("Error","Enter email in correct format",parent=self.root)
             
             elif self.var_fname.get()=="" or self.var_lname.get()=="" or self.var_email.get()=="" or self.var_contact.get()=="" or self.var_securityQ.get()=="Select" or self.var_securityA.get()=="" or self.var_role.get()=="" or self.var_role_id.get()=="" or self.var_pass.get()=="" or self.var_confpass.get()=="":
-                messagebox.showerror("Error","Please fill All fields")
+                messagebox.showerror("Error","Please fill All fields",parent=self.root)
             elif any(ch.isdigit() for ch in self.var_fname.get()):
-                messagebox.showerror("Error","Name cant have numbers")
+                messagebox.showerror("Error","Name cant have numbers",parent=self.root)
             elif self.var_pass.get()!=self.var_confpass.get():
-                messagebox.showerror("Error","Enter same password")
+                messagebox.showerror("Error","Enter same password",parent=self.root)
             elif self.var_pass.get().isalnum()>0 or len(self.var_pass.get())<8:
-                messagebox.showerror("Error","password must contain numbers,alphabets and some special characters i.e, @#$%&\n atleast 8 characters should be there")
+                messagebox.showerror("Error","password must contain numbers,alphabets and some special characters i.e, @#$%&\n atleast 8 characters should be there",parent=self.root)
         
             elif self.var_check.get()==0:
-                messagebox.showerror("Error","Agree our terms and conditions")
+                messagebox.showerror("Error","Agree our terms and conditions",parent=self.root)
         
             else:
                 conn=sqlite3.connect(r'database\face_recognition.db')
@@ -455,8 +455,14 @@ class Register:
                 value=(self.var_email.get(),)
                 my_cursor.execute(query,value)
                 row=my_cursor.fetchone()
+                query2=("select * from users where roleid=?")
+                value2=(self.var_role_id.get(),)
+                my_cursor.execute(query2,value2)
+                row2=my_cursor.fetchone()
                 if row!=None:
-                    messagebox.showerror("Error","User already exist,please try another email")
+                    messagebox.showerror("Error","User already exist,please try another email",parent=self.root)
+                if row2!=None:
+                    messagebox.showerror("Error","Existing ID Given",parent=self.root)
                 else:
                     my_cursor.execute("insert into users values(?,?,?,?,?,?,?,?,?)",(
                                                                         
@@ -472,11 +478,12 @@ class Register:
                                                                        
                                                                                         
                     ))
-                    messagebox.showinfo("Success","Successfully registered")
+                    messagebox.showinfo("Success","Successfully registered",parent=self.root)
+                    self.root.destroy()
                 conn.commit()
                 conn.close()
             
-                self.root.destroy()
+                    
     
     
     def isValid(self,email):
