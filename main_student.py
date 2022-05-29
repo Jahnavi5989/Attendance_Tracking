@@ -563,7 +563,7 @@ class Student_win:##for window
             messagebox.showerror("Error","All fields are required",parent=self.root)
         else:
             try:
-                messagebox.showinfo("Instructions","1.Show your face to camera in correct angle\n2.Please dont close camera button while it is taking photosamples",parent=self.root)
+                #messagebox.showinfo("Instructions","1.Show your face to camera in correct angle\n2.Please dont close camera button while it is taking photosamples",parent=self.root)
                 conn=sqlite3.connect(r'database\face_recognition.db')
                 my_cursor=conn.cursor()
                 my_cursor.execute("select * from student")

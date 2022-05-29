@@ -65,7 +65,7 @@ class Train_faculty:##for window
             clf.train(faces,ids)
             clf.write(r"xmlfiles\classifier_fac.xml")
             cv2.destroyAllWindows()
-            messagebox.showinfo("Result","Training datasets completed!!")   
+            messagebox.showinfo("Result","Training datasets completed!!",parent=self.root)   
         except Exception as es:
             messagebox.showerror("Error",f"Due To:{str(es)}",parent=self.root)                 
             
