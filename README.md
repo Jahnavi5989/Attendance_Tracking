@@ -121,7 +121,7 @@ you must ensure that you have saved one student details as soon as saving you ha
 - install requirements by using 
 
         pip install -r requirements.txt
-- Just run login.py file in any ide that supports python environment like VScode or pycharm etc which is the main file of the project follow how to this app section
+- Just run login.py file in any ide that supports python environment like VScode or pycharm etc which is the main file of the project follow how to use this app       section
   for further instructions
 
 ## How to use this app?
@@ -158,7 +158,7 @@ you must ensure that you have saved one student details as soon as saving you ha
 ## Future Developement Plannings
 - Trying to make it as a browser based application using 
   django framework
-- Trying build more secured Authentication System
+- Trying to  build more secured Authentication System
 
 ## Things learned 
 - how to prepare a proper Documentation for project
