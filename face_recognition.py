@@ -89,7 +89,7 @@ class Face_Recognition:##for window
                 i=my_cursor.fetchone()
                 i="+".join(i)
                 
-                if confidence>77:
+                if confidence>78:  
                     cv2.putText(img,f"Student ID:{i}",(x,y-75),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
                     cv2.putText(img,f"Roll No:{r}",(x,y-55),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
                     cv2.putText(img,f"Name:{n}",(x,y-30),cv2.FONT_HERSHEY_COMPLEX,0.8,(255,255,255))
