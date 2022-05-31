@@ -31,6 +31,8 @@ it is an Advanced Attendance App based on face recognition technology.
 
 
 ![Logo](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRX-jdoPkMRAcrzfM_t0lui8f_ejOoUSZh2oA&usqp=CAU)
+ - Faculty will managae student data
+ - Admin can manage both student and faculty data
 
 ## Algorithms used
 Haarcascade Opencv (Object Detection)
@@ -132,13 +134,13 @@ you must ensure that you have saved one student details as soon as saving you ha
 - Open login file 
 - Register yourself with accurate data and then login with credentials
 - if you register as student you will be redirected to the student portal
-  where you can see your details click on your details and click on take photo samples
+  where you can see your details click on your details and click on take photo samples(for that first faculty has to update your details in their protal then given   deatils will be reflect in student portal for that login as faculty save some student details again come to student portal search with id you can find the student   details for the faulty also first admin have to save your details then you can see in faculty portal by searching your id)
   follow the instructions and give your photosamples
 - click on train system
 - then go take my attendance tab click on scan face it will detect your face and hit attendance in the excel file directly
-- you can check your attendance once faculty save your attendance
+- you can check your attendance once faculty save your attendance(for that go to faculty portal import csv file and click on save to database thats all you can see   those details in attendance report and in the same way for faculty admin have to do that)
 - In the same way faculty also have to follow
-- faculty can see their attendance after admin saved them
+- faculty can see their attendance after admin saved them to database
 - If you registered as admin you will be redirected to Admin portal you can perform CRUD on faculty and students data based on the necessities
 
 
