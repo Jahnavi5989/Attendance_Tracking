@@ -3,7 +3,7 @@
 ![Logo](https://img.freepik.com/free-vector/emotion-detection-abstract-concept-vector-illustration-speech-emotional-state-recognition-emotion-detection-from-text-sensor-technology-machine-learning-ai-reading-face-abstract-metaphor_335657-2305.jpg?w=360)
 # Attendance Tracking using Facial Recognition
 
-This Project is Desktop based Application Developed for Microsoft Intern Engage 2022 Programme
+This Project is Desktop based Application 
 it is an Advanced Attendance App based on face recognition technology.
 
 
